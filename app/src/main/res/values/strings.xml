@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CapWinVerify</string>
+    <string name="senha">Senha:</string>
+    <string name="hintSenha">Informe sua Senha</string>
+    <string name="login">Login:</string>
+    <string name="hintLogin">Informe seu login</string>
+    <string name="btnAcessar">Acessar</string>
+</resources>
