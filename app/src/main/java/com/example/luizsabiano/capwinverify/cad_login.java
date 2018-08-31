@@ -8,6 +8,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.luizsabiano.capwinverify.domain.DaoSession;
+import com.example.luizsabiano.capwinverify.domain.Usuario;
+import com.example.luizsabiano.capwinverify.domain.UsuarioDao;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 
@@ -24,10 +27,16 @@ public class cad_login extends AppCompatActivity {
     Button btnAddUser;
     BancoController db;
 
+    private UsuarioDao usuarioDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cad_login);
+
+        // get the note DAO
+        DaoSession daoSession = ((App) getApplication()).getDaoSession();
+        usuarioDao = daoSession.getUsuarioDao();
 
         //vinculando objetos aos IDs
         editCpf = (EditText) findViewById(R.id.editCpf);
@@ -76,6 +85,16 @@ public class cad_login extends AppCompatActivity {
                                 editCelPhone.getText().toString(),
                                 editEmail.getText().toString(),
                                 editPasswd.getText().toString()));
+
+                        Usuario usuario = new Usuario(
+                                0L,
+                                editUserName.getText().toString(),
+                                editEmail.getText().toString(),
+                                editPasswd.getText().toString(),
+                                editCpf.getText().toString());
+
+                        usuarioDao.insert(usuario);
+
                         Toast.makeText(getApplicationContext(), resultado, Toast.LENGTH_LONG).show();
                     }
                 }
