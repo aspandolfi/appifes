@@ -32,4 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.github.rtoshiro.mflibrary:mflibrary:1.0.0' //biblioteca de máscara
     implementation 'org.greenrobot:greendao:3.2.2' // add library
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

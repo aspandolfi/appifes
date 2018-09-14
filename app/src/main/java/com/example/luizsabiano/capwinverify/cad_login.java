@@ -1,16 +1,17 @@
 package com.example.luizsabiano.capwinverify;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.luizsabiano.capwinverify.domain.DaoSession;
 import com.example.luizsabiano.capwinverify.domain.Usuario;
 import com.example.luizsabiano.capwinverify.domain.UsuarioDao;
+import com.example.luizsabiano.capwinverify.services.UsuarioService;
+import com.example.luizsabiano.capwinverify.viewmodels.UsuarioViewModel;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 
@@ -27,16 +28,19 @@ public class cad_login extends AppCompatActivity {
     Button btnAddUser;
     BancoController db;
 
-    private UsuarioDao usuarioDao;
+    // get the note DAO
+    private UsuarioDao getUsuarioDao() {
+        return ((App) getApplication()).getDaoSession().getUsuarioDao();
+    }
+
+    private UsuarioService getUsuarioService() {
+        return ((App) getApplication()).getUsuarioService();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cad_login);
-
-        // get the note DAO
-        DaoSession daoSession = ((App) getApplication()).getDaoSession();
-        usuarioDao = daoSession.getUsuarioDao();
 
         //vinculando objetos aos IDs
         editCpf = (EditText) findViewById(R.id.editCpf);
@@ -49,26 +53,26 @@ public class cad_login extends AppCompatActivity {
 
         // máscara Cpf
         SimpleMaskFormatter cpf = new SimpleMaskFormatter("NNN.NNN.NNN-NN");
-        MaskTextWatcher mtw = new MaskTextWatcher(editCpf,cpf);
+        MaskTextWatcher mtw = new MaskTextWatcher(editCpf, cpf);
         editCpf.addTextChangedListener(mtw);
         // Fim máscara
 
         // máscara Celular
         SimpleMaskFormatter cel = new SimpleMaskFormatter("(NN) NNNNN-NNNN");
-        MaskTextWatcher celw = new MaskTextWatcher(editCelPhone,cel);
+        MaskTextWatcher celw = new MaskTextWatcher(editCelPhone, cel);
         editCelPhone.addTextChangedListener(celw);
         // Fim Celular
 
         btnAddUser.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if ( editPasswd.getText().length() ==0 || editPasswd2.getText().length()==0
-                        || editCpf.getText().length()==0 || editCelPhone.getText().length() ==0
-                        || editUserName.getText().length() ==0 || editEmail.getText().length() == 0 ){
+                if (editPasswd.getText().length() == 0 || editPasswd2.getText().length() == 0
+                        || editCpf.getText().length() == 0 || editCelPhone.getText().length() == 0
+                        || editUserName.getText().length() == 0 || editEmail.getText().length() == 0) {
                     Toast.makeText(getApplication(),
                             "Todos os campos são obrigatórios",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    if ( !editPasswd.getText().toString().equals(editPasswd2.getText().toString()  ) ){
+                    if (!editPasswd.getText().toString().equals(editPasswd2.getText().toString())) {
                         Toast.makeText(getApplication(),
                                 "As duas senhas digitadas devem ser iguais",
                                 Toast.LENGTH_LONG).show();
@@ -86,14 +90,17 @@ public class cad_login extends AppCompatActivity {
                                 editEmail.getText().toString(),
                                 editPasswd.getText().toString()));
 
-                        Usuario usuario = new Usuario(
-                                0L,
-                                editUserName.getText().toString(),
-                                editEmail.getText().toString(),
-                                editPasswd.getText().toString(),
-                                editCpf.getText().toString());
+                        Usuario usuario = new Usuario();
+                        usuario.setEmail(editEmail.getText().toString());
+                        usuario.setCpf(editCpf.getText().toString());
+                        usuario.setName(editUserName.getText().toString());
+                        usuario.setPassword(editPasswd.getText().toString());
 
-                        usuarioDao.insert(usuario);
+                        UsuarioViewModel usuarioVm = new UsuarioViewModel(usuario.getName(), usuario.getCpf(), usuario.getEmail(), usuario.getPassword());
+
+                        UsuarioViewModel result = getUsuarioService().Add(usuarioVm);
+
+                        getUsuarioDao().insert(usuario);
 
                         Toast.makeText(getApplicationContext(), resultado, Toast.LENGTH_LONG).show();
                     }

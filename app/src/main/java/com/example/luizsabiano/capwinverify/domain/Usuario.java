@@ -21,14 +21,18 @@ public class Usuario {
     @Property
     private String cpf;
 
-    @Generated(hash = 1324780433)
-    public Usuario(Long id, String name, String email, String password,
-            String cpf) {
+    @Property
+    private String token;
+
+    @Generated(hash = 805853993)
+    public Usuario(Long id, String name, String email, String password, String cpf,
+            String token) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.cpf = cpf;
+        this.token = token;
     }
 
     @Generated(hash = 562950751)
@@ -73,5 +77,13 @@ public class Usuario {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
